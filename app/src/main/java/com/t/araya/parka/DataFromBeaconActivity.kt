@@ -2,6 +2,7 @@ package com.t.araya.parka
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.t.araya.parka.R
 
 public class DataFromBeaconActivity : AppCompatActivity() {
 

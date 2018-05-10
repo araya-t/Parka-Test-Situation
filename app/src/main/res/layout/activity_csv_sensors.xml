@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.t.araya.parka.Controller.CsvSensorsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center|center_vertical|top">
+
+        <com.t.araya.parka.View.SensorsViewGroup
+            android:id="@+id/sensorsViewGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.t.araya.parka.View.SensorsViewGroup>
+
+        <com.t.araya.parka.View.StartStopButtonViewGroup
+            android:id="@+id/startStopButtonViewGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+        </com.t.araya.parka.View.StartStopButtonViewGroup>
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

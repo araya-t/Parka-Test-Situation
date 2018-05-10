@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.t.araya.parka.MainActivity">
+    tools:context="com.t.araya.parka.Controller.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,6 +30,15 @@
             android:layout_marginTop="10dp"
             android:textSize="17sp"
             android:text="Data from Beacon" />
+
+        <Button
+            android:id="@+id/btnCsvSensors"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:textSize="17sp"
+            android:text="Sensors CSV file " />
 
 
     </LinearLayout>

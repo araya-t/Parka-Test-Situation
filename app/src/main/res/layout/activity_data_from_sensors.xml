@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.t.araya.parka.DataFromSensorsActivity">
+    tools:context="com.t.araya.parka.Controller.DataFromSensorsActivity">
 
     <com.t.araya.parka.View.SensorsViewGroup
         android:id="@+id/sensorsViewGroup"

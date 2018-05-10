@@ -65,27 +65,27 @@ public class SensorsViewGroup extends FrameLayout {
 
     }
 
-    public void setTvAccel_x_text (String text) {
+    public void setTvAccel_x_text(String text) {
         tvAccel_x.setText(text);
     }
 
-    public void setTvAccel_y_text (String text) {
+    public void setTvAccel_y_text(String text) {
         tvAccel_y.setText(text);
     }
 
-    public void setTvAccel_z_text (String text) {
+    public void setTvAccel_z_text(String text) {
         tvAccel_z.setText(text);
     }
 
-    public void setTvGyro_x_text (String text) {
+    public void setTvGyro_x_text(String text) {
         tvGyro_x.setText(text);
     }
 
-    public void setTvGyro_y_text (String text) {
+    public void setTvGyro_y_text(String text) {
         tvGyro_y.setText(text);
     }
 
-    public void setTvGyro_z_text (String text) {
+    public void setTvGyro_z_text(String text) {
         tvGyro_z.setText(text);
     }
 }
