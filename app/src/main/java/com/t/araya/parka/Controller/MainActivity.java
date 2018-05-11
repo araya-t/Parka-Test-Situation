@@ -42,27 +42,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if (v == btnDataFromSensors) {
-            Toast.makeText(this, "in btn data from sensors", Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent(this, DataFromSensorsActivity.class);
             startActivity(intent);
-
         }
 
         if (v == btnDataFromBeacon) {
-            Toast.makeText(this, "in btn data from beacon", Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent(this, DataFromBeaconActivity.class);
             startActivity(intent);
-
         }
 
         if (v == btnCsvSensors){
-            Toast.makeText(this, "in btn csv sensors", Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent(this, CsvSensorsActivity.class);
             startActivity(intent);
-
         }
 
     }

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ public class SensorsViewGroup extends FrameLayout {
     private TextView tvGyro_x;
     private TextView tvGyro_y;
     private TextView tvGyro_z;
+    private EditText editTextListenerSampling;
+    private Button btnEnter;
 
     public SensorsViewGroup(@NonNull Context context) {
         super(context);
@@ -63,29 +66,73 @@ public class SensorsViewGroup extends FrameLayout {
         tvGyro_y = (TextView) findViewById(R.id.tvGyro_y);
         tvGyro_z = (TextView) findViewById(R.id.tvGyro_z);
 
+        editTextListenerSampling = (EditText) findViewById(R.id.editTextListenerSampling);
+        btnEnter = (Button) findViewById(R.id.btnEnter);
+
+    }
+
+    public TextView getTvAccel_x() {
+        return tvAccel_x;
     }
 
     public void setTvAccel_x_text(String text) {
-        tvAccel_x.setText(text);
+        this.tvAccel_x.setText(text);
+    }
+
+    public TextView getTvAccel_y() {
+        return tvAccel_y;
     }
 
     public void setTvAccel_y_text(String text) {
-        tvAccel_y.setText(text);
+        this.tvAccel_y.setText(text);
+    }
+
+    public TextView getTvAccel_z() {
+        return tvAccel_z;
     }
 
     public void setTvAccel_z_text(String text) {
-        tvAccel_z.setText(text);
+        this.tvAccel_z.setText(text);
+
+    }
+
+    public TextView getTvGyro_x() {
+        return tvGyro_x;
     }
 
     public void setTvGyro_x_text(String text) {
-        tvGyro_x.setText(text);
+        this.tvGyro_x.setText(text);
+    }
+
+    public TextView getTvGyro_y() {
+        return tvGyro_y;
     }
 
     public void setTvGyro_y_text(String text) {
-        tvGyro_y.setText(text);
+        this.tvGyro_y.setText(text);
+    }
+
+    public TextView getTvGyro_z() {
+        return tvGyro_z;
     }
 
     public void setTvGyro_z_text(String text) {
-        tvGyro_z.setText(text);
+        this.tvGyro_z.setText(text);
+    }
+
+    public EditText getEditTextListenerSampling() {
+        return editTextListenerSampling;
+    }
+
+    public void setEditTextListenerSampling(String text) {
+        this.editTextListenerSampling.setText(text);
+    }
+
+    public Button getBtnEnter() {
+        return btnEnter;
+    }
+
+    public void setBtnEnter(String text) {
+        btnEnter.setText(text);
     }
 }
