@@ -8,14 +8,16 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.t.araya.parka.R;
 import com.t.araya.parka.View.SensorsViewGroup;
 
 import java.text.DecimalFormat;
 
-public class DataFromSensorsActivity extends AppCompatActivity {
+public class DataFromSensorsActivity extends AppCompatActivity implements View.OnClickListener {
 
     SensorManager sensorManager;
     Sensor accelSensor, gyroSensor;
@@ -23,6 +25,7 @@ public class DataFromSensorsActivity extends AppCompatActivity {
     SensorsViewGroup sensorsViewGroup;
     String line = "";
     long start = System.currentTimeMillis();
+    int listenerSampling = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,8 @@ public class DataFromSensorsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_data_from_sensors);
 
         initInstances();
+
+        sensorsViewGroup.getBtnEnter().setOnClickListener(this);
 
     }
 
@@ -46,13 +51,37 @@ public class DataFromSensorsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(accelListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(gyroListener, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        registerListener();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterListener();
+    }
+
+    private boolean registerListener() {
+        // Register sensor listeners
+        boolean isSuccess = false;
+
+        if (listenerSampling == -1) {
+            listenerSampling = SensorManager.SENSOR_DELAY_NORMAL;
+        } else {
+            isSuccess = true;
+        }
+        sensorManager.registerListener(accelListener, accelSensor, listenerSampling);
+        sensorManager.registerListener(gyroListener, gyroSensor, listenerSampling);
+
+        return isSuccess;
+    }
+
+    private void unregisterListener() {
         sensorManager.unregisterListener(accelListener);
         sensorManager.unregisterListener(gyroListener);
     }
@@ -102,9 +131,22 @@ public class DataFromSensorsActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    public void onClick(View v) {
+        if (v == sensorsViewGroup.getBtnEnter()) {
+            unregisterListener();
 
+            String listenerSamplingStr = sensorsViewGroup.getEditTextListenerSampling().getText().toString();
+            listenerSampling = Integer.parseInt(listenerSamplingStr);
 
+            boolean isSuccess = registerListener();
 
+            sensorsViewGroup.setEditTextListenerSampling(listenerSamplingStr);
 
+            if (isSuccess) {
+                Toast.makeText(this, "Listener sampling rate = " + listenerSampling, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }

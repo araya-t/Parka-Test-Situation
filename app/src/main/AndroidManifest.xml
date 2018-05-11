@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Controller.DataFromSensorsActivity" />
-        <activity android:name=".DataFromBeaconActivity" />
+        <activity android:name=".Controller.DataFromBeaconActivity" />
         <activity android:name=".Controller.CsvSensorsActivity"></activity>
     </application>
 
