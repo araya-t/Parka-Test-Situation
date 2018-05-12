@@ -93,7 +93,6 @@ public class SensorsViewGroup extends FrameLayout {
 
     public void setTvAccel_z_text(String text) {
         this.tvAccel_z.setText(text);
-
     }
 
     public TextView getTvGyro_x() {

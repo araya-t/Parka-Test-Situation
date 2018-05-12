@@ -36,7 +36,7 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
     StartStopButtonViewGroup startStopButtonViewGroup;
     DecimalFormat dcm = new DecimalFormat("0.0000");
     long startTime;
-    private BufferedWriter file;
+    private BufferedWriter file = null;
     long timeStampAcce = 0, timeStampGyro = 0, milliSecAcce = 0, milliSecGyro = 0;
     int listenerSampling = -1;
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
@@ -70,21 +70,28 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onResume() {
         super.onResume();
+        
         registerListener();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
         unregisterListener();
-        stopRecording();
+        if(file!=null){
+            stopRecording();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         unregisterListener();
-        stopRecording();
+        if(file!=null){
+            stopRecording();
+        }
     }
 
     private boolean registerListener() {
