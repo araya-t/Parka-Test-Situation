@@ -70,7 +70,7 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onResume() {
         super.onResume();
-        
+
         registerListener();
     }
 
