@@ -19,12 +19,12 @@ import java.text.DecimalFormat;
 
 public class DataFromSensorsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    SensorManager sensorManager;
-    Sensor accelSensor, gyroSensor;
-    DecimalFormat dcm = new DecimalFormat("0.0000");
-    SensorsViewGroup sensorsViewGroup;
-    long start = System.currentTimeMillis();
-    int listenerSampling = -1;
+    private SensorManager sensorManager;
+    private Sensor accelSensor, gyroSensor;
+    private DecimalFormat dcm = new DecimalFormat("0.0000");
+    private SensorsViewGroup sensorsViewGroup;
+    private long start = System.currentTimeMillis();
+    private int listenerSampling = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class DataFromSensorsActivity extends AppCompatActivity implements View.O
         sensorManager.unregisterListener(gyroListener);
     }
 
-    SensorEventListener accelListener = new SensorEventListener() {
+    private SensorEventListener accelListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent eventAcc) {
             float acc_x = eventAcc.values[0];
@@ -107,7 +107,7 @@ public class DataFromSensorsActivity extends AppCompatActivity implements View.O
         }
     };
 
-    SensorEventListener gyroListener = new SensorEventListener() {
+    private SensorEventListener gyroListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent eventGyro) {
             float gy_x = eventGyro.values[0];

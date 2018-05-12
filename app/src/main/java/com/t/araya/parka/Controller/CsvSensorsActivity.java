@@ -30,16 +30,16 @@ import java.util.Map;
 
 public class CsvSensorsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    SensorManager sensorManager;
-    Sensor accelSensor, gyroSensor;
-    SensorsViewGroup sensorsViewGroup;
-    StartStopButtonViewGroup startStopButtonViewGroup;
-    DecimalFormat dcm = new DecimalFormat("0.0000");
-    long startTime;
+    private SensorManager sensorManager;
+    private Sensor accelSensor, gyroSensor;
+    private SensorsViewGroup sensorsViewGroup;
+    private StartStopButtonViewGroup startStopButtonViewGroup;
+    private DecimalFormat dcm = new DecimalFormat("0.0000");
+    private long startTime;
     private BufferedWriter file = null;
-    long timeStampAcce = 0, timeStampGyro = 0, milliSecAcce = 0, milliSecGyro = 0;
-    int listenerSampling = -1;
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+    private long timeStampAcce = 0, timeStampGyro = 0, milliSecAcce = 0, milliSecGyro = 0;
+    private int listenerSampling = -1;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,7 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
         sensorManager.unregisterListener(gyroListener);
     }
 
-    SensorEventListener gyroListener = new SensorEventListener() {
+    private SensorEventListener gyroListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent eventGyro) {
             float gy_x = eventGyro.values[0];
@@ -141,7 +141,7 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
         }
     };
 
-    SensorEventListener accelListener = new SensorEventListener() {
+    private SensorEventListener accelListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent eventAcce) {
             float acc_x = eventAcce.values[0];

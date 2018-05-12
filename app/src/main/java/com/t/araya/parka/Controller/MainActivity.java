@@ -10,9 +10,9 @@ import com.t.araya.parka.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnDataFromSensors;
-//    Button btnDataFromBeacon;
-    Button btnCsvSensors;
+    private Button btnDataFromSensors;
+//    private Button btnDataFromBeacon;
+    private Button btnCsvSensors;
 
 
     public void onCreate(Bundle savedInstanceState) {
