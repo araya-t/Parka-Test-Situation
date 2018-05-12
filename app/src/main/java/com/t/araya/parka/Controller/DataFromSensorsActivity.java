@@ -23,7 +23,6 @@ public class DataFromSensorsActivity extends AppCompatActivity implements View.O
     Sensor accelSensor, gyroSensor;
     DecimalFormat dcm = new DecimalFormat("0.0000");
     SensorsViewGroup sensorsViewGroup;
-    String line = "";
     long start = System.currentTimeMillis();
     int listenerSampling = -1;
 
