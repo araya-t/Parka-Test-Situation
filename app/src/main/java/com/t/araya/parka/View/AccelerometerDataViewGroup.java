@@ -13,37 +13,34 @@ import android.widget.TextView;
 
 import com.t.araya.parka.R;
 
-public class SensorsViewGroup extends FrameLayout {
+public class AccelerometerDataViewGroup extends FrameLayout {
 
     private TextView tvAccel_x;
     private TextView tvAccel_y;
     private TextView tvAccel_z;
-    private TextView tvGyro_x;
-    private TextView tvGyro_y;
-    private TextView tvGyro_z;
     private EditText editTextListenerSampling;
     private Button btnEnter;
 
-    public SensorsViewGroup(@NonNull Context context) {
+    public AccelerometerDataViewGroup(@NonNull Context context) {
         super(context);
         initInflate();
         initInstances();
     }
 
-    public SensorsViewGroup(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public AccelerometerDataViewGroup(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initInflate();
         initInstances();
     }
 
-    public SensorsViewGroup(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public AccelerometerDataViewGroup(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initInflate();
         initInstances();
     }
 
     @TargetApi(21)
-    public SensorsViewGroup(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AccelerometerDataViewGroup(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initInflate();
         initInstances();
@@ -51,7 +48,7 @@ public class SensorsViewGroup extends FrameLayout {
 
     private void initInflate() {
         // Inflate Layout here
-        inflate(getContext(), R.layout.sensors_data_layout, this);
+        inflate(getContext(), R.layout.accelerometer_data_layout, this);
 
     }
 
@@ -61,10 +58,6 @@ public class SensorsViewGroup extends FrameLayout {
         tvAccel_x = (TextView) findViewById(R.id.tvAccel_x);
         tvAccel_y = (TextView) findViewById(R.id.tvAccel_y);
         tvAccel_z = (TextView) findViewById(R.id.tvAccel_z);
-
-        tvGyro_x = (TextView) findViewById(R.id.tvGyro_x);
-        tvGyro_y = (TextView) findViewById(R.id.tvGyro_y);
-        tvGyro_z = (TextView) findViewById(R.id.tvGyro_z);
 
         editTextListenerSampling = (EditText) findViewById(R.id.editTextListenerSampling);
         btnEnter = (Button) findViewById(R.id.btnEnter);
@@ -93,30 +86,6 @@ public class SensorsViewGroup extends FrameLayout {
 
     public void setTvAccel_z_text(String text) {
         this.tvAccel_z.setText(text);
-    }
-
-    public TextView getTvGyro_x() {
-        return tvGyro_x;
-    }
-
-    public void setTvGyro_x_text(String text) {
-        this.tvGyro_x.setText(text);
-    }
-
-    public TextView getTvGyro_y() {
-        return tvGyro_y;
-    }
-
-    public void setTvGyro_y_text(String text) {
-        this.tvGyro_y.setText(text);
-    }
-
-    public TextView getTvGyro_z() {
-        return tvGyro_z;
-    }
-
-    public void setTvGyro_z_text(String text) {
-        this.tvGyro_z.setText(text);
     }
 
     public EditText getEditTextListenerSampling() {

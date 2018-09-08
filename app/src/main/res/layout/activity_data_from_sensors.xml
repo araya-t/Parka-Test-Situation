@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     tools:context="com.t.araya.parka.Controller.DataFromSensorsActivity">
 
-    <com.t.araya.parka.View.SensorsViewGroup
+    <com.t.araya.parka.View.AccelerometerDataViewGroup
         android:id="@+id/sensorsViewGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.t.araya.parka.View.SensorsViewGroup>
+    </com.t.araya.parka.View.AccelerometerDataViewGroup>
 
 
 </android.support.constraint.ConstraintLayout>

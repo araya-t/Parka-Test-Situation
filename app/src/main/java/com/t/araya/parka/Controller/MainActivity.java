@@ -10,8 +10,6 @@ import com.t.araya.parka.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnDataFromSensors;
-//    private Button btnDataFromBeacon;
     private Button btnCsvSensors;
 
 
@@ -21,16 +19,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initInstances();
 
-        btnDataFromSensors.setOnClickListener(this);
-//        btnDataFromBeacon.setOnClickListener(this);
         btnCsvSensors.setOnClickListener(this);
-
     }
 
     public void initInstances() {
 
-        btnDataFromSensors = (Button) findViewById(R.id.btnDataFromSensors);
-//        btnDataFromBeacon = (Button) findViewById(R.id.btnDataFromBeacon);
         btnCsvSensors = (Button) findViewById(R.id.btnCsvSensors);
 
     }
@@ -39,18 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        if (v == btnDataFromSensors) {
-            Intent intent = new Intent(this, DataFromSensorsActivity.class);
-            startActivity(intent);
-        }
-
-//        if (v == btnDataFromBeacon) {
-//            Intent intent = new Intent(this, DataFromBeaconActivity.class);
-//            startActivity(intent);
-//        }
-
         if (v == btnCsvSensors){
-            Intent intent = new Intent(this, CsvSensorsActivity.class);
+            Intent intent = new Intent(this, CsvAccelerometerDataActivity.class);
             startActivity(intent);
         }
 

@@ -7,22 +7,20 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.t.araya.parka.R;
-import com.t.araya.parka.View.SensorsViewGroup;
+import com.t.araya.parka.View.AccelerometerDataViewGroup;
 
 import java.text.DecimalFormat;
 
 public class DataFromSensorsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SensorManager sensorManager;
-    private Sensor accelSensor, gyroSensor;
-    private DecimalFormat dcm = new DecimalFormat("0.0000");
-    private SensorsViewGroup sensorsViewGroup;
+    private Sensor accelSensor;
+    private DecimalFormat dcm = new DecimalFormat("0.00000000");
+    private AccelerometerDataViewGroup sensorsViewGroup;
     private long start = System.currentTimeMillis();
     private int listenerSampling = -1;
 
@@ -32,19 +30,14 @@ public class DataFromSensorsActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_data_from_sensors);
 
         initInstances();
-
         sensorsViewGroup.getBtnEnter().setOnClickListener(this);
-
     }
 
     public void initInstances() {
-
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        sensorsViewGroup = (SensorsViewGroup) findViewById(R.id.sensorsViewGroup);
-
+        sensorsViewGroup = (AccelerometerDataViewGroup) findViewById(R.id.sensorsViewGroup);
     }
 
     @Override
@@ -75,14 +68,12 @@ public class DataFromSensorsActivity extends AppCompatActivity implements View.O
             isSuccess = true;
         }
         sensorManager.registerListener(accelListener, accelSensor, listenerSampling);
-        sensorManager.registerListener(gyroListener, gyroSensor, listenerSampling);
 
         return isSuccess;
     }
 
     private void unregisterListener() {
         sensorManager.unregisterListener(accelListener);
-        sensorManager.unregisterListener(gyroListener);
     }
 
     private SensorEventListener accelListener = new SensorEventListener() {
@@ -106,29 +97,6 @@ public class DataFromSensorsActivity extends AppCompatActivity implements View.O
 
         }
     };
-
-    private SensorEventListener gyroListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent eventGyro) {
-            float gy_x = eventGyro.values[0];
-            float gy_y = eventGyro.values[1];
-            float gy_z = eventGyro.values[2];
-            long timeStamp = eventGyro.timestamp;
-
-            sensorsViewGroup.setTvGyro_x_text("X : " + dcm.format(gy_x));
-            sensorsViewGroup.setTvGyro_y_text("Y : " + dcm.format(gy_y));
-            sensorsViewGroup.setTvGyro_z_text("Z : " + dcm.format(gy_z));
-
-            String line = "Gyro: [Time:"+ (System.currentTimeMillis() - start) +"] [TS:" + eventGyro.timestamp + "] ( x = "+ dcm.format(gy_x) +",y = "+ dcm.format(gy_y) +",z = "+ dcm.format(gy_z)+" )";
-            System.out.println(line);
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };
-
 
     @Override
     public void onClick(View v) {

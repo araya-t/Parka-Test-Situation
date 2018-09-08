@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -11,19 +10,12 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnStartRecord"
+            android:id="@+id/btnStopEngine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="@string/start_recording" />
-
-        <Button
-            android:id="@+id/btnStopRecord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stop_recording" />
+            android:layout_gravity="center"
+            android:text="@string/stop_engine" />
 
     </LinearLayout>
-
 
 </android.support.constraint.ConstraintLayout>

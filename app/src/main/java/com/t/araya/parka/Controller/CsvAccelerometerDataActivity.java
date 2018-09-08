@@ -8,15 +8,13 @@ import android.hardware.SensorManager;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.t.araya.parka.R;
-import com.t.araya.parka.View.SensorsViewGroup;
+import com.t.araya.parka.View.AccelerometerDataViewGroup;
 import com.t.araya.parka.View.StartStopButtonViewGroup;
+import com.t.araya.parka.View.StopEngineButtonViewGroup;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,21 +23,21 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-public class CsvSensorsActivity extends AppCompatActivity implements View.OnClickListener {
+public class CsvAccelerometerDataActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SensorManager sensorManager;
-    private Sensor accelSensor, gyroSensor;
-    private SensorsViewGroup sensorsViewGroup;
+    private Sensor accelSensor;
+    private AccelerometerDataViewGroup accelerometerDataViewGroup;
     private StartStopButtonViewGroup startStopButtonViewGroup;
-    private DecimalFormat dcm = new DecimalFormat("0.0000");
+    private StopEngineButtonViewGroup stopEngineButtonViewGroup;
+    private DecimalFormat dcm = new DecimalFormat("0.000000");
     private long startTime;
     private BufferedWriter file = null;
-    private long timeStampAcce = 0, timeStampGyro = 0, milliSecAcce = 0, milliSecGyro = 0;
+    private long timeStampAcce = 0, milliSecAcce = 0;
     private int listenerSampling = -1;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+    private boolean isStopEngine = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +48,8 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
 
         startStopButtonViewGroup.getBtnStart().setOnClickListener(this);
         startStopButtonViewGroup.getBtnStop().setOnClickListener(this);
-        sensorsViewGroup.getBtnEnter().setOnClickListener(this);
+        accelerometerDataViewGroup.getBtnEnter().setOnClickListener(this);
+        stopEngineButtonViewGroup.getBtnStopEngine().setOnClickListener(this);
 
         Toast.makeText(this, "You can set listener sampling rate", Toast.LENGTH_SHORT).show();
 
@@ -60,10 +59,10 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        sensorsViewGroup = (SensorsViewGroup) findViewById(R.id.sensorsViewGroup);
+        accelerometerDataViewGroup = (AccelerometerDataViewGroup) findViewById(R.id.accelerometerDataViewGroup);
         startStopButtonViewGroup = (StartStopButtonViewGroup) findViewById(R.id.startStopButtonViewGroup);
+        stopEngineButtonViewGroup = (StopEngineButtonViewGroup) findViewById(R.id.stopEngineButtonViewGroup);
 
     }
 
@@ -104,42 +103,13 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
             isSuccess = true;
         }
         sensorManager.registerListener(accelListener, accelSensor, listenerSampling);
-        sensorManager.registerListener(gyroListener, gyroSensor, listenerSampling);
 
         return isSuccess;
     }
 
     private void unregisterListener() {
         sensorManager.unregisterListener(accelListener);
-        sensorManager.unregisterListener(gyroListener);
     }
-
-    private SensorEventListener gyroListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent eventGyro) {
-            float gy_x = eventGyro.values[0];
-            float gy_y = eventGyro.values[1];
-            float gy_z = eventGyro.values[2];
-            milliSecGyro = System.currentTimeMillis() - startTime;
-            timeStampGyro = eventGyro.timestamp;
-
-            sensorsViewGroup.setTvGyro_x_text("X : " + dcm.format(gy_x));
-            sensorsViewGroup.setTvGyro_y_text("Y : " + dcm.format(gy_y));
-            sensorsViewGroup.setTvGyro_z_text("Z : " + dcm.format(gy_z));
-
-            Log.i("Write Sensor Data", "GyroData: (" + milliSecGyro + ") [" + timeStampGyro + "] x=" + gy_x + " ,y=" + gy_y + " ,z=" + gy_z);
-
-            String line = milliSecGyro + "," + timeStampGyro + "," + " " + "," + " " + "," + " " + ","
-                    + dcm.format(gy_x) + "," + dcm.format(gy_y) + "," + dcm.format(gy_z) + "," + "\n";
-
-            writeToFile(line);
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };
 
     private SensorEventListener accelListener = new SensorEventListener() {
         @Override
@@ -151,15 +121,15 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
             milliSecAcce = System.currentTimeMillis() - startTime;
             timeStampAcce = eventAcce.timestamp;
 
-            sensorsViewGroup.setTvAccel_x_text("X : " + dcm.format(acc_x));
-            sensorsViewGroup.setTvAccel_y_text("Y : " + dcm.format(acc_y));
-            sensorsViewGroup.setTvAccel_z_text("Z : " + dcm.format(acc_z));
+            accelerometerDataViewGroup.setTvAccel_x_text("X : " + dcm.format(acc_x));
+            accelerometerDataViewGroup.setTvAccel_y_text("Y : " + dcm.format(acc_y));
+            accelerometerDataViewGroup.setTvAccel_z_text("Z : " + dcm.format(acc_z));
 
-            Log.i("Write Sensor Data", "AcceData: (" + milliSecAcce + ") [" + timeStampAcce + "] x=" + acc_x + " ,y=" + acc_y + " ,z=" + acc_z);
+//            Log.i("Write Sensor Data", "AcceData: (" + milliSecAcce + ") [" + timeStampAcce + "] x=" + acc_x + " ,y=" + acc_y + " ,z=" + acc_z);
 
             String line = milliSecAcce + "," + timeStampAcce + ","
                     + dcm.format(acc_x) + "," + dcm.format(acc_y) + "," + dcm.format(acc_z) + ","
-                    + " " + "," + " " + "," + " " + ",\n";
+                    + isStopEngine +  ",\n";
 
             writeToFile(line);
         }
@@ -169,6 +139,18 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
 
         }
     };
+
+//    private void createDirectory(){
+//        String myfolder = Environment.getExternalStorageDirectory()+"/Parka";
+//        File f = new File(myfolder);
+//        if(!f.exists())
+//            if(!f.mkdir()){
+//                Toast.makeText(this, myfolder + " can't be created.", Toast.LENGTH_SHORT).show();
+//
+//            }
+//            else
+//                Toast.makeText(this, myfolder + " can be created.", Toast.LENGTH_SHORT).show();
+//    }
 
     private void writeToFile(String line) {
         if (file == null) {
@@ -195,35 +177,51 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(this, "Stop recording", Toast.LENGTH_SHORT).show();
         }
 
-        if (v == sensorsViewGroup.getBtnEnter()) {
+        if (v == accelerometerDataViewGroup.getBtnEnter()) {
             unregisterListener();
 
-            String listenerSamplingStr = sensorsViewGroup.getEditTextListenerSampling().getText().toString();
+            String listenerSamplingStr = accelerometerDataViewGroup.getEditTextListenerSampling().getText().toString();
             listenerSampling = Integer.parseInt(listenerSamplingStr);
 
             boolean isSuccess = registerListener();
 
-            sensorsViewGroup.setEditTextListenerSampling(listenerSamplingStr);
+            accelerometerDataViewGroup.setEditTextListenerSampling(listenerSamplingStr);
 
             if (isSuccess) {
                 Toast.makeText(this, "Listener sampling rate = " + listenerSampling, Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (v == stopEngineButtonViewGroup.getBtnStopEngine()){
+            isStopEngine = true;
+            Toast.makeText(this, "Stop engine",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startRecording() {
         // Prepare data storage
+        boolean isMkdirSuccess = false;
 
-        String directory = Environment.getExternalStorageDirectory() + "/Documents";
         Date now = new Date(System.currentTimeMillis());
-        String name = "SensorsData_" + sdf.format(now) + "_sampling_" + listenerSampling + "microsec_.csv";
-        System.out.println("DATEEEEEE --> "+ name);
+        String fileName = "AccelerometerData_" + sdf.format(now) + "_sampling_" + listenerSampling + "microsec_.csv";
+        String directory = Environment.getExternalStorageDirectory() + "/_Parka/AccerometerCsvFile";
 
+//        File initFile = new File(directory, fileName);
+        File initFile = new File(directory);
+
+        if(!initFile.exists()){
+            isMkdirSuccess = initFile.mkdirs();
+        }else{
+            isMkdirSuccess = true;
+        }
+
+        System.out.println("FILE NAME --> "+ fileName);
         System.out.println("DIRECTORY -----> " + directory);
-        File filename = new File(directory, name);
+        System.out.println("getAbsolutePath -----> " + initFile.getAbsolutePath());
 
+//        CSVWriter csvw = new CSVWriter(new FileWriter(dir.getAbsolutePath()+"/results.csv"));
         try {
-            file = new BufferedWriter(new FileWriter(filename));
+            file = new BufferedWriter(new FileWriter(initFile.getAbsolutePath()+"/"+fileName));
             startTime = System.currentTimeMillis();
             writeHeadFile();
 
@@ -232,7 +230,9 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
         }
 
         registerListener();
-        Toast.makeText(this, "IN START RECORDING | file name = " + filename, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "START RECORDING | "
+                + isMkdirSuccess
+                + "file name = " + fileName, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -246,15 +246,16 @@ public class CsvSensorsActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void writeHeadFile() {
-
-        String line = "Millisec" + "," + "TimeStamp" + "," + "Acce X" + "," + "Acce Y" + "," + "Acce Z" + ","
-                + "Gyro X" + "," + "Gyro Y" + "," + "Gyro Z" + "," + "\n";
+        String line = "Millisec" + "," + "TimeStamp" + ","
+                + "Acce X" + "," + "Acce Y" + "," + "Acce Z" + ","
+                + "Stop engine"+",\n";
         try {
             file.write(line);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 

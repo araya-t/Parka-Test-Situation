@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.t.araya.parka.Controller.CsvSensorsActivity">
+    tools:context="com.t.araya.parka.Controller.CsvAccelerometerDataActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,20 +12,26 @@
         android:orientation="vertical"
         android:gravity="center|center_vertical|top">
 
-        <com.t.araya.parka.View.SensorsViewGroup
-            android:id="@+id/sensorsViewGroup"
+        <com.t.araya.parka.View.AccelerometerDataViewGroup
+            android:id="@+id/accelerometerDataViewGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </com.t.araya.parka.View.SensorsViewGroup>
+        </com.t.araya.parka.View.AccelerometerDataViewGroup>
 
         <com.t.araya.parka.View.StartStopButtonViewGroup
             android:id="@+id/startStopButtonViewGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp">
-
         </com.t.araya.parka.View.StartStopButtonViewGroup>
+
+        <com.t.araya.parka.View.StopEngineButtonViewGroup
+            android:id="@+id/stopEngineButtonViewGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+        </com.t.araya.parka.View.StopEngineButtonViewGroup>
 
     </LinearLayout>
 
