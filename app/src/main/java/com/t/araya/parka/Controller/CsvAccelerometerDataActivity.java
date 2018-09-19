@@ -8,21 +8,23 @@ import android.hardware.SensorManager;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.t.araya.parka.Model.CsvReader;
+import com.t.araya.parka.Model.CsvWriter;
 import com.t.araya.parka.R;
 import com.t.araya.parka.View.AccelerometerDataViewGroup;
 import com.t.araya.parka.View.StartStopButtonViewGroup;
 import com.t.araya.parka.View.StopEngineButtonViewGroup;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CsvAccelerometerDataActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,12 +34,16 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     private StartStopButtonViewGroup startStopButtonViewGroup;
     private StopEngineButtonViewGroup stopEngineButtonViewGroup;
     private DecimalFormat dcm = new DecimalFormat("0.000000");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
     private long startTime;
-    private BufferedWriter file = null;
+    private String fileName;
+    private CsvWriter csvWriter;
+    private boolean isStopEngine = false;
     private long timeStampAcce = 0, milliSecAcce = 0;
     private int listenerSampling = -1;
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
-    private boolean isStopEngine = false;
+
+    private CsvReader csvReader;
+    private boolean isReadFinish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +58,9 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         stopEngineButtonViewGroup.getBtnStopEngine().setOnClickListener(this);
 
         Toast.makeText(this, "You can set listener sampling rate", Toast.LENGTH_SHORT).show();
-
     }
 
     public void initInstances() {
-
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
@@ -64,6 +68,11 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         startStopButtonViewGroup = (StartStopButtonViewGroup) findViewById(R.id.startStopButtonViewGroup);
         stopEngineButtonViewGroup = (StopEngineButtonViewGroup) findViewById(R.id.stopEngineButtonViewGroup);
 
+        csvWriter = new CsvWriter();
+        csvReader = new CsvReader();
+
+        isReadFinish = false;
+        fileName = null;
     }
 
     @Override
@@ -78,7 +87,7 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         super.onPause();
 
         unregisterListener();
-        if(file!=null){
+        if(csvWriter.getFile() != null){
             stopRecording();
         }
     }
@@ -88,7 +97,7 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         super.onDestroy();
 
         unregisterListener();
-        if(file!=null){
+        if(csvWriter.getFile() != null){
             stopRecording();
         }
     }
@@ -126,12 +135,13 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
             accelerometerDataViewGroup.setTvAccel_z_text("Z : " + dcm.format(acc_z));
 
 //            Log.i("Write Sensor Data", "AcceData: (" + milliSecAcce + ") [" + timeStampAcce + "] x=" + acc_x + " ,y=" + acc_y + " ,z=" + acc_z);
-
             String line = milliSecAcce + "," + timeStampAcce + ","
                     + dcm.format(acc_x) + "," + dcm.format(acc_y) + "," + dcm.format(acc_z) + ","
                     + isStopEngine +  ",\n";
 
-            writeToFile(line);
+            if(csvWriter.getFile() != null) {
+                csvWriter.writeToFile(line);
+            }
         }
 
         @Override
@@ -139,31 +149,6 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
 
         }
     };
-
-//    private void createDirectory(){
-//        String myfolder = Environment.getExternalStorageDirectory()+"/Parka";
-//        File f = new File(myfolder);
-//        if(!f.exists())
-//            if(!f.mkdir()){
-//                Toast.makeText(this, myfolder + " can't be created.", Toast.LENGTH_SHORT).show();
-//
-//            }
-//            else
-//                Toast.makeText(this, myfolder + " can be created.", Toast.LENGTH_SHORT).show();
-//    }
-
-    private void writeToFile(String line) {
-        if (file == null) {
-            return;
-        }
-
-        try {
-            file.write(line);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -178,13 +163,15 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         }
 
         if (v == accelerometerDataViewGroup.getBtnEnter()) {
+            /** set unregisterListener brfore set new listenerSampling
+                then register registerListener again with new listenerSampling **/
+
             unregisterListener();
 
             String listenerSamplingStr = accelerometerDataViewGroup.getEditTextListenerSampling().getText().toString();
             listenerSampling = Integer.parseInt(listenerSamplingStr);
 
             boolean isSuccess = registerListener();
-
             accelerometerDataViewGroup.setEditTextListenerSampling(listenerSamplingStr);
 
             if (isSuccess) {
@@ -199,64 +186,58 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     }
 
     private void startRecording() {
-        // Prepare data storage
-        boolean isMkdirSuccess = false;
+        // Prepare data of storage
 
         Date now = new Date(System.currentTimeMillis());
-        String fileName = "AccelerometerData_" + sdf.format(now) + "_sampling_" + listenerSampling + "microsec_.csv";
-        String directory = Environment.getExternalStorageDirectory() + "/_Parka/AccerometerCsvFile";
+        fileName = "AccelerometerData_" + sdf.format(now) + "_sampling_" + listenerSampling + "microsec_.csv";
+        String directory = Environment.getExternalStorageDirectory() + "/_Parka/AccelerometerCsvFile";
 
-//        File initFile = new File(directory, fileName);
-        File initFile = new File(directory);
+        csvWriter.createFile(fileName,directory);
+        startTime = csvWriter.getStartTime();
 
-        if(!initFile.exists()){
-            isMkdirSuccess = initFile.mkdirs();
-        }else{
-            isMkdirSuccess = true;
-        }
-
-        System.out.println("FILE NAME --> "+ fileName);
-        System.out.println("DIRECTORY -----> " + directory);
-        System.out.println("getAbsolutePath -----> " + initFile.getAbsolutePath());
-
-//        CSVWriter csvw = new CSVWriter(new FileWriter(dir.getAbsolutePath()+"/results.csv"));
-        try {
-            file = new BufferedWriter(new FileWriter(initFile.getAbsolutePath()+"/"+fileName));
-            startTime = System.currentTimeMillis();
-            writeHeadFile();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String headFileStr = "Millisec" + "," + "TimeStamp" + ","
+                + "Acce X" + "," + "Acce Y" + "," + "Acce Z" + ","
+                + "Stop engine"+",\n";
+        csvWriter.writeHeadFile(headFileStr);
 
         registerListener();
         Toast.makeText(this, "START RECORDING | "
-                + isMkdirSuccess
                 + "file name = " + fileName, Toast.LENGTH_SHORT).show();
-
     }
 
     private void stopRecording() {
         unregisterListener();
-        try {
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if(csvWriter.getFile() != null) {
+            csvWriter.closeFile();
         }
-    }
 
-    private void writeHeadFile() {
-        String line = "Millisec" + "," + "TimeStamp" + ","
-                + "Acce X" + "," + "Acce Y" + "," + "Acce Z" + ","
-                + "Stop engine"+",\n";
-        try {
-            file.write(line);
+        if (isReadFinish != true){
+            List<String[]> rows = new ArrayList<>();
+            try {
+                if(fileName != null){
+                    rows = csvReader.readCSV(fileName);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+//            Log.i("row size", "size = " + rows.size() + "");
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (rows.size() != 0) {
+                int i = 0;
+                while(i < rows.size()) {
+                    Log.d("read from csv file",
+                            String.format("row %s: %s, %s, %s, %s, %s, %s",
+                                    i+1, rows.get(i)[0], rows.get(i)[1],rows.get(i)[2], rows.get(i)[3], rows.get(i)[4], rows.get(i)[5]));
+                    i++;
+                }
+
+                if(i==rows.size()){
+                    isReadFinish = true;
+                }
+            }
         }
+
     }
-
-
 }
