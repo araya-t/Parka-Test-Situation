@@ -38,7 +38,7 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     private long startTime;
     private String fileName;
     private CsvWriter csvWriter;
-    private boolean isStopEngine = false;
+    private boolean isStopEngine;
     private long timeStampAcce = 0, milliSecAcce = 0;
     private int listenerSampling = -1;
 
@@ -71,6 +71,7 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         csvWriter = new CsvWriter();
         csvReader = new CsvReader();
 
+        isStopEngine = false;
         isReadFinish = false;
         fileName = null;
     }
