@@ -34,7 +34,9 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     private StartStopButtonViewGroup startStopButtonViewGroup;
     private StopEngineButtonViewGroup stopEngineButtonViewGroup;
     private DecimalFormat dcm = new DecimalFormat("0.000000");
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    private SimpleDateFormat sdfTimeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSSSSS");
+
     private long startTime;
     private String fileName;
     private CsvWriter csvWriter;
@@ -79,7 +81,6 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     @Override
     protected void onResume() {
         super.onResume();
-
         registerListener();
     }
 
@@ -87,10 +88,10 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     protected void onPause() {
         super.onPause();
 
-        unregisterListener();
-        if(csvWriter.getFile() != null){
-            stopRecording();
-        }
+//        unregisterListener();
+//        if(csvWriter.getFile() != null){
+//            stopRecording();
+//        }
     }
 
     @Override
@@ -101,6 +102,8 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
         if(csvWriter.getFile() != null){
             stopRecording();
         }
+
+        isStopEngine = false;
     }
 
     private boolean registerListener() {
@@ -129,14 +132,15 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
             float acc_z = eventAcce.values[2];
 
             milliSecAcce = System.currentTimeMillis() - startTime;
-            timeStampAcce = eventAcce.timestamp;
+            timeStampAcce = System.currentTimeMillis();
+
 
             accelerometerDataViewGroup.setTvAccel_x_text("X : " + dcm.format(acc_x));
             accelerometerDataViewGroup.setTvAccel_y_text("Y : " + dcm.format(acc_y));
             accelerometerDataViewGroup.setTvAccel_z_text("Z : " + dcm.format(acc_z));
 
 //            Log.i("Write Sensor Data", "AcceData: (" + milliSecAcce + ") [" + timeStampAcce + "] x=" + acc_x + " ,y=" + acc_y + " ,z=" + acc_z);
-            String line = milliSecAcce + "," + timeStampAcce + ","
+            String line = milliSecAcce + "," + sdfTimeStamp.format(timeStampAcce) + ","
                     + dcm.format(acc_x) + "," + dcm.format(acc_y) + "," + dcm.format(acc_z) + ","
                     + isStopEngine +  ",\n";
 
@@ -187,10 +191,9 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
     }
 
     private void startRecording() {
-        // Prepare data of storage
-
+        /** Prepare title data of file **/
         Date now = new Date(System.currentTimeMillis());
-        fileName = "AccelerometerData_" + sdf.format(now) + "_sampling_" + listenerSampling + "microsec_.csv";
+        fileName = "AccelerometerData_" + sdf.format(now) + "_sampling_" + listenerSampling + "microsec.csv";
         String directory = Environment.getExternalStorageDirectory() + "/_Parka/AccelerometerCsvFile";
 
         csvWriter.createFile(fileName,directory);
@@ -211,6 +214,7 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
 
         if(csvWriter.getFile() != null) {
             csvWriter.closeFile();
+            isReadFinish = false;
         }
 
         if (isReadFinish != true){
@@ -223,8 +227,6 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
                 e.printStackTrace();
             }
 
-//            Log.i("row size", "size = " + rows.size() + "");
-
             if (rows.size() != 0) {
                 int i = 0;
                 while(i < rows.size()) {
@@ -236,9 +238,9 @@ public class CsvAccelerometerDataActivity extends AppCompatActivity implements V
 
                 if(i==rows.size()){
                     isReadFinish = true;
+                    rows.clear();
                 }
             }
         }
-
     }
 }
