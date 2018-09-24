@@ -67,6 +67,7 @@ public class CsvWriter {
     public void closeFile(){
         try {
             file.close();
+            file = null;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,8 +80,4 @@ public class CsvWriter {
     public long getStartTime(){
         return startTime;
     }
-
-
-
-
 }
